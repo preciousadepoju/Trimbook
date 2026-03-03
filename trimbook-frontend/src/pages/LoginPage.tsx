@@ -103,10 +103,11 @@ export default function LoginPage() {
         body: JSON.stringify({ email: forgotEmail })
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to send reset code.');
       toast.success(data.message);
       setForgotStep('code');
-    } catch {
-      toast.error('Failed to send reset code.');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to send reset code. Please try again.');
     } finally {
       setIsForgotLoading(false);
     }
