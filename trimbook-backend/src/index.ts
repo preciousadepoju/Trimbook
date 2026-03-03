@@ -20,6 +20,7 @@ const app = express();
 app.use(express.json());
 // CORS configuration
 const allowedOrigins = [
+    'https://trimbook-nine.vercel.app',
     'https://trimbook-vert.vercel.app',
     'http://localhost:5173',
     'http://localhost:3000',
