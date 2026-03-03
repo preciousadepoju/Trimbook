@@ -260,6 +260,15 @@ export default function LoginPage() {
             animate={{ opacity: 1, x: 0 }}
             className="max-w-[400px] mx-auto w-full"
           >
+            {/* Back to Home */}
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-primary transition-colors mb-8 group"
+            >
+              <span className="group-hover:-translate-x-1 transition-transform">←</span>
+              Back to Home
+            </Link>
+
             {/* Header */}
             <div className="mb-10">
               <h1 className="text-3xl font-bold text-slate-900 mb-2">
@@ -271,6 +280,7 @@ export default function LoginPage() {
                   : 'Join TrimBook today to book your next premium cut.'}
               </p>
             </div>
+
 
             {/* Toggle Tabs (hidden if verifying code) */}
             {!showVerification && (
