@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-primary: #ec5b13;
+  --color-background-light: #f8f6f6;
+  --color-background-dark: #221610;
+
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-background-light text-slate-900 antialiased;
+  }
+}
+
+@layer utilities {
+  .sidebar-item-active {
+    @apply bg-primary/15 border-r-4 border-primary text-primary;
+  }
+}

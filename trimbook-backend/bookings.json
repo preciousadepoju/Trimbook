@@ -1,0 +1,57 @@
+[
+  {
+    "_id": "69a5ce9540fbf737f0e09087",
+    "userId": "69a59dd447da8047d7f12073",
+    "service": "Classic Haircut & Beard Trim",
+    "barber": "Alex Jacobs",
+    "date": "2026-03-03T17:53:00.000Z",
+    "status": "Completed",
+    "createdAt": "2026-03-02T17:53:25.239Z",
+    "updatedAt": "2026-03-02T17:57:30.200Z",
+    "__v": 0
+  },
+  {
+    "_id": "69a5d09414cf1c5165b9a5ce",
+    "userId": "69a59dd447da8047d7f12073",
+    "service": "Beard Grooming",
+    "barber": "Alex Jacobs",
+    "date": "2026-05-04T17:01:00.000Z",
+    "status": "Completed",
+    "createdAt": "2026-03-02T18:01:56.860Z",
+    "updatedAt": "2026-03-02T22:12:39.981Z",
+    "__v": 0
+  },
+  {
+    "_id": "69a5d19714cf1c5165b9a5db",
+    "userId": "69a59dd447da8047d7f12073",
+    "service": "Beard Grooming",
+    "barber": "Alex Jacobs",
+    "date": "2026-03-04T18:01:00.000Z",
+    "status": "Cancelled",
+    "createdAt": "2026-03-02T18:06:15.921Z",
+    "updatedAt": "2026-03-02T18:16:02.241Z",
+    "__v": 0
+  },
+  {
+    "_id": "69a5d1eb14cf1c5165b9a5e0",
+    "userId": "69a59dd447da8047d7f12073",
+    "service": "Beard Grooming",
+    "barber": "Alex Jacobs",
+    "date": "2026-03-04T18:01:00.000Z",
+    "status": "Cancelled",
+    "createdAt": "2026-03-02T18:07:39.249Z",
+    "updatedAt": "2026-03-02T18:15:54.829Z",
+    "__v": 0
+  },
+  {
+    "_id": "69a60d353965f1e42048e964",
+    "userId": "69a60586bbe31d31e530e277",
+    "service": "Classic Haircut",
+    "barber": "Alex Jacobs",
+    "date": "2026-03-05T12:20:00.000Z",
+    "status": "Cancelled",
+    "createdAt": "2026-03-02T22:20:37.453Z",
+    "updatedAt": "2026-03-02T22:23:43.102Z",
+    "__v": 0
+  }
+]

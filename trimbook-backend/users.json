@@ -1,0 +1,30 @@
+[
+  {
+    "_id": "69a5cb605952949928b495a5",
+    "name": "Alex Jacobs",
+    "email": "addictcode6@gmail.com",
+    "passwordHash": "$2a$10$luUqjm3XZxf0p.yRY0H4xOkp9vL0SqvUDJ86j1LLnXyZom48l8jQa",
+    "role": "barber",
+    "avatarUrl": "",
+    "createdAt": "2026-03-02T17:39:44.613Z",
+    "updatedAt": "2026-03-02T22:14:00.985Z",
+    "__v": 0,
+    "isVerified": true,
+    "location": "Lagos, Nigeria",
+    "phone": "+234 8140473561"
+  },
+  {
+    "_id": "69a60586bbe31d31e530e277",
+    "name": "Precious Adepoju",
+    "email": "iampreciousss01@gmail.com",
+    "passwordHash": "$2a$10$q4QSJivw9ZSEUaQf5fCCvOH.iwF3nh0G2Aj3mxwGzh.3stjeA1Rxa",
+    "role": "user",
+    "avatarUrl": "",
+    "phone": "+234 7025013532",
+    "location": "Oklahoma, United States",
+    "isVerified": true,
+    "createdAt": "2026-03-02T21:47:50.322Z",
+    "updatedAt": "2026-03-02T22:09:39.675Z",
+    "__v": 0
+  }
+]
