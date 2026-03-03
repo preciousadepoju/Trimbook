@@ -42,11 +42,11 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-4 lg:space-y-6">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+        className="bg-white rounded-xl lg:rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
           <div className="p-2 bg-slate-100 rounded-lg text-slate-600">
@@ -86,7 +86,7 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+        className="bg-white rounded-xl lg:rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
       >
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
           <div className="p-2 bg-slate-100 rounded-lg text-slate-600">
@@ -132,7 +132,7 @@ export default function SettingsPage() {
           </div>
         </div>
         <div className="p-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
               <p className="font-bold text-slate-900">Delete Account</p>
               <p className="text-sm text-slate-500">Permanently remove your account and all associated data.</p>

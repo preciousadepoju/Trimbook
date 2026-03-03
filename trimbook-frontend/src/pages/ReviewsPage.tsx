@@ -68,10 +68,10 @@ export default function ReviewsPage() {
   const { reviews = [], avgRating = 0, totalReviews = 0, breakdown = {} } = stats || {};
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-4 lg:space-y-6">
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
         {/* Avg Rating Card */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -135,8 +135,8 @@ export default function ReviewsPage() {
       )}
 
       {/* Reviews List */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+      <div className="bg-white rounded-xl lg:rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="flex items-center justify-between px-4 lg:px-6 py-4 border-b border-slate-100">
           <h3 className="font-bold text-slate-800 flex items-center gap-2">
             <MessageSquare className="w-4 h-4 text-primary" />
             Client Reviews

@@ -138,11 +138,11 @@ export default function ProfilePage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+        className="bg-white rounded-xl lg:rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
       >
         {/* Cover & Avatar Header */}
         <div className="h-32 bg-gradient-to-r from-primary/80 to-slate-900"></div>
-        <div className="px-8 pb-8 relative">
+          <div className="px-4 lg:px-8 pb-6 lg:pb-8 relative">
           <div className="flex justify-between items-end mb-8">
             <div className="relative -mt-12 group">
               <div className="size-24 rounded-full border-4 border-white bg-gradient-to-br from-primary/80 to-slate-700 overflow-hidden shadow-md flex items-center justify-center">

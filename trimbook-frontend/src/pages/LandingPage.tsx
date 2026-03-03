@@ -74,18 +74,18 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="max-w-2xl"
           >
-            <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-white leading-tight mb-4 lg:mb-6">
               Book Your <span className="text-primary">Perfect</span> Cut
             </h1>
-            <p className="text-lg md:text-xl text-slate-200 mb-10 leading-relaxed opacity-90">
-              Experience effortless grooming with the finest barbers in town. Your next look is just a few taps away. Precision, style, and luxury combined.
+            <p className="text-base md:text-xl text-slate-200 mb-8 lg:mb-10 leading-relaxed opacity-90">
+              Experience effortless grooming with the finest barbers in town. Your next look is just a few taps away.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/login" className="px-8 py-4 bg-primary text-white font-bold rounded-xl shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all flex items-center gap-2">
+            <div className="flex flex-wrap gap-3 lg:gap-4">
+              <Link to="/login" className="px-6 lg:px-8 py-3 lg:py-4 bg-primary text-white font-bold rounded-xl shadow-xl shadow-primary/30 hover:bg-primary/90 transition-all flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
                 Book Appointment
               </Link>
-              <Link to="/login" className="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-xl hover:bg-white/20 transition-all">
+              <Link to="/login" className="px-6 lg:px-8 py-3 lg:py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 font-bold rounded-xl hover:bg-white/20 transition-all">
                 Explore Services
               </Link>
             </div>
@@ -154,7 +154,7 @@ export default function LandingPage() {
               <Link to="/login" className="mt-4 inline-block text-primary font-bold hover:underline">Sign up as a barber to add services</Link>
             </div>
           ) : (
-            <div className="flex flex-wrap justify-center gap-6">
+            <div className="flex flex-wrap justify-center gap-4 lg:gap-6">
               {services.map((service, i) => (
                 <motion.div
                   key={service._id}

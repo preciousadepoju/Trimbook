@@ -10,13 +10,15 @@ import {
   LogOut,
   CheckCheck,
   X,
-  Star
+  Star,
+  Menu
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { BookingModal } from './BookingModal';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import API_BASE_URL from '../config/api';
+import { motion, AnimatePresence } from 'motion/react';
 
 interface Notification {
   _id: string;
@@ -34,11 +36,28 @@ export function DashboardLayout() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [editData, setEditData] = useState<any>(null);
 
+  // Mobile sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   // Notification state
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifPanel, setShowNotifPanel] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
+
+  // Close sidebar on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setIsSidebarOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const fetchNotifications = useCallback(async () => {
     const token = localStorage.getItem('trimbook_token');
@@ -106,7 +125,7 @@ export function DashboardLayout() {
               ),
               { duration: 12000, id: `rating-${notif._id}` }
             );
-          }, idx * 1200); // Stagger so they don't all pop at once
+          }, idx * 1200);
         });
       }
     };
@@ -202,89 +221,135 @@ export function DashboardLayout() {
   const { title, subtitle } = getPageTitle();
   const isActive = (path: string) => location.pathname === path;
 
+  // Shared nav links
+  const navLinks = [
+    { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+    { to: '/dashboard/bookings', icon: CalendarDays, label: 'My Bookings' },
+    { to: '/dashboard/services', icon: Scissors, label: 'Services' },
+    { to: '/dashboard/profile', icon: User, label: 'Profile' },
+    { to: '/dashboard/settings', icon: Settings, label: 'Settings' },
+    ...(user?.role === 'barber' ? [{ to: '/dashboard/reviews', icon: Star, label: 'My Reviews' }] : []),
+  ];
+
+  const SidebarContent = () => (
+    <>
+      <div className="p-6 flex items-center gap-3">
+        <div className="size-10 bg-primary rounded-lg flex items-center justify-center shrink-0">
+          <Scissors className="text-white w-6 h-6" />
+        </div>
+        <div>
+          <h1 className="text-xl font-bold tracking-tight">TrimBook</h1>
+          <p className="text-xs text-slate-400">Premium Grooming</p>
+        </div>
+      </div>
+      <nav className="flex-1 mt-2">
+        <div className="space-y-1 px-3">
+          {navLinks.map(({ to, icon: Icon, label }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${isActive(to) ? 'bg-primary/10 text-primary font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+            >
+              <Icon className="w-5 h-5 shrink-0" />
+              <span className="font-medium">{label}</span>
+            </Link>
+          ))}
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-white/5 transition-colors text-left rounded-xl mt-2"
+          >
+            <LogOut className="w-5 h-5 shrink-0" />
+            <span className="font-medium">Logout</span>
+          </button>
+        </div>
+      </nav>
+      <div className="p-4 mx-3 mb-4 border border-white/10 rounded-xl bg-white/5">
+        <div className="flex items-center gap-3">
+          <div className="size-9 rounded-full bg-gradient-to-br from-primary/80 to-slate-700 overflow-hidden flex items-center justify-center shrink-0">
+            {user?.avatarUrl
+              ? <img src={user.avatarUrl} alt="User" className="w-full h-full object-cover" />
+              : <span className="text-white text-sm font-bold select-none">{user?.name?.charAt(0).toUpperCase() || '?'}</span>
+            }
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold truncate text-white">{user?.name || 'User'}</p>
+            <p className="text-xs text-slate-400 truncate">{user?.email || ''}</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div className="flex min-h-screen overflow-hidden bg-background-light">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 bg-[#1a1a1a] text-white flex flex-col shrink-0">
-        <div className="p-6 flex items-center gap-3">
-          <div className="size-10 bg-primary rounded-lg flex items-center justify-center">
-            <Scissors className="text-white w-6 h-6" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">TrimBook</h1>
-            <p className="text-xs text-slate-400">Premium Grooming</p>
-          </div>
-        </div>
-        <nav className="flex-1 mt-6">
-          <div className="space-y-1">
-            <Link to="/dashboard" className={`flex items-center gap-3 px-6 py-3 transition-colors ${isActive('/dashboard') ? 'sidebar-item-active text-primary' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
-              <LayoutDashboard className="w-5 h-5" />
-              <span className="font-medium">Dashboard</span>
-            </Link>
-            <Link to="/dashboard/bookings" className={`flex items-center gap-3 px-6 py-3 transition-colors ${isActive('/dashboard/bookings') ? 'sidebar-item-active text-primary' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
-              <CalendarDays className="w-5 h-5" />
-              <span className="font-medium">My Bookings</span>
-            </Link>
-            <Link to="/dashboard/services" className={`flex items-center gap-3 px-6 py-3 transition-colors ${isActive('/dashboard/services') ? 'sidebar-item-active text-primary' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
-              <Scissors className="w-5 h-5" />
-              <span className="font-medium">Services</span>
-            </Link>
-            <Link to="/dashboard/profile" className={`flex items-center gap-3 px-6 py-3 transition-colors ${isActive('/dashboard/profile') ? 'sidebar-item-active text-primary' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
-              <User className="w-5 h-5" />
-              <span className="font-medium">Profile</span>
-            </Link>
-            <Link to="/dashboard/settings" className={`flex items-center gap-3 px-6 py-3 transition-colors ${isActive('/dashboard/settings') ? 'sidebar-item-active text-primary' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
-              <Settings className="w-5 h-5" />
-              <span className="font-medium">Settings</span>
-            </Link>
-            {/* Reviews link — barbers only */}
-            {user?.role === 'barber' && (
-              <Link to="/dashboard/reviews" className={`flex items-center gap-3 px-6 py-3 transition-colors ${isActive('/dashboard/reviews') ? 'sidebar-item-active text-primary' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>
-                <Star className="w-5 h-5" />
-                <span className="font-medium">My Reviews</span>
-              </Link>
-            )}
-            <button onClick={logout} className="w-full flex items-center gap-3 px-6 py-3 text-red-400 hover:text-red-300 hover:bg-white/5 transition-colors text-left mt-auto">
-              <LogOut className="w-5 h-5" />
-              <span className="font-medium">Logout</span>
-            </button>
-          </div>
-        </nav>
-        <div className="p-6 border-t border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="size-10 rounded-full bg-gradient-to-br from-primary/80 to-slate-700 overflow-hidden flex items-center justify-center shrink-0">
-              {user?.avatarUrl
-                ? <img src={user.avatarUrl} alt="User" className="w-full h-full object-cover" />
-                : <span className="text-white text-sm font-bold select-none">{user?.name?.charAt(0).toUpperCase() || '?'}</span>
-              }
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold truncate text-white">{user?.name || 'User'}</p>
-              <p className="text-xs text-slate-400 truncate">{user?.email || ''}</p>
-            </div>
-          </div>
-        </div>
+
+      {/* ── Desktop Sidebar ── */}
+      <aside className="hidden lg:flex w-64 bg-[#1a1a1a] text-white flex-col shrink-0">
+        <SidebarContent />
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-y-auto relative">
-        {/* Header */}
-        <header className="h-20 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0 sticky top-0 z-10 w-full">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
-            <p className="text-sm text-slate-500">{subtitle}</p>
-          </div>
-          <div className="flex items-center gap-4">
+      {/* ── Mobile Sidebar Overlay ── */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+            {/* Drawer */}
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="fixed top-0 left-0 h-full w-72 bg-[#1a1a1a] text-white flex flex-col z-50 lg:hidden shadow-2xl"
+            >
+              {/* Close button */}
+              <button
+                onClick={() => setIsSidebarOpen(false)}
+                className="absolute top-4 right-4 size-8 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <SidebarContent />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
+      {/* ── Main Content Area ── */}
+      <main className="flex-1 flex flex-col overflow-y-auto relative min-w-0">
+        {/* Header */}
+        <header className="h-16 lg:h-20 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 shrink-0 sticky top-0 z-10 w-full gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Hamburger — mobile only */}
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="lg:hidden size-9 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors shrink-0"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <div className="min-w-0">
+              <h2 className="text-base lg:text-2xl font-bold text-slate-800 truncate">{title}</h2>
+              <p className="text-xs lg:text-sm text-slate-500 hidden sm:block">{subtitle}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 lg:gap-4 shrink-0">
             {/* Notification Bell */}
             <div className="relative" ref={notifRef}>
               <button
-                onClick={() => { setShowNotifPanel(prev => !prev); if (!showNotifPanel && unreadCount > 0) {} }}
-                className="size-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 relative hover:bg-slate-200 transition-colors"
+                onClick={() => { setShowNotifPanel(prev => !prev); }}
+                className="size-9 lg:size-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-600 relative hover:bg-slate-200 transition-colors"
               >
-                <Bell className="w-5 h-5" />
+                <Bell className="w-4 h-4 lg:w-5 lg:h-5" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white">
+                  <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 bg-primary text-white text-[10px] font-bold rounded-full flex items-center justify-center ring-2 ring-white">
                     {unreadCount > 9 ? '9+' : unreadCount}
                   </span>
                 )}
@@ -292,7 +357,7 @@ export function DashboardLayout() {
 
               {/* Dropdown Panel */}
               {showNotifPanel && (
-                <div className="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 overflow-hidden">
+                <div className="absolute right-0 top-12 w-72 sm:w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 overflow-hidden">
                   <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                       <Bell className="w-4 h-4 text-slate-600" />
@@ -342,26 +407,28 @@ export function DashboardLayout() {
               )}
             </div>
 
-            <div className="h-10 w-px bg-slate-200 mx-2"></div>
+            <div className="hidden sm:block h-8 w-px bg-slate-200" />
+
             {user?.role !== 'barber' && (
               <button
                 onClick={() => setIsBookingModalOpen(true)}
-                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-primary/20"
+                className="flex items-center gap-1.5 lg:gap-2 bg-primary hover:bg-primary/90 text-white px-3 lg:px-5 py-2 lg:py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-primary/20 text-sm"
               >
-                <Plus className="w-5 h-5" />
-                <span className="hidden sm:inline">Book New Appointment</span>
+                <Plus className="w-4 h-4 lg:w-5 lg:h-5" />
+                <span className="hidden sm:inline">Book Appointment</span>
                 <span className="sm:hidden">Book</span>
               </button>
             )}
           </div>
         </header>
 
-        <div className="flex-1 p-8">
+        <div className="flex-1 p-4 lg:p-8">
           <div className="w-full mx-auto">
             <Outlet context={{ refreshTimestamp: Date.now() }} />
           </div>
         </div>
       </main>
+
       <BookingModal
         isOpen={isBookingModalOpen}
         editData={editData}
@@ -373,4 +440,3 @@ export function DashboardLayout() {
     </div>
   );
 }
-

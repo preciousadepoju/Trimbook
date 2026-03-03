@@ -282,7 +282,7 @@ export function BookingModal({ isOpen, onClose, onSuccess, editData }: BookingMo
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="w-full max-w-lg bg-white rounded-2xl shadow-xl z-10 overflow-hidden max-h-[92vh] flex flex-col"
+            className="w-full max-w-lg bg-white rounded-2xl shadow-xl z-10 overflow-hidden max-h-[95vh] flex flex-col mx-4 sm:mx-0"
           >
             <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50">
               <h2 className="text-xl font-bold text-slate-800">
@@ -296,7 +296,7 @@ export function BookingModal({ isOpen, onClose, onSuccess, editData }: BookingMo
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto flex-1">
+            <form onSubmit={handleSubmit} className="p-4 lg:p-6 space-y-5 overflow-y-auto flex-1">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2" htmlFor="service">
                   Select Service

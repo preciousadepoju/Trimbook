@@ -32,23 +32,20 @@ export function Navbar({ transparent = false }: NavbarProps) {
 
 export function Footer() {
   return (
-    <footer className="bg-background-light py-20 border-t border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-12">
-        <div className="col-span-1 md:col-span-1">
-          <div className="flex items-center gap-2 mb-6">
+    <footer className="bg-background-light py-12 md:py-20 border-t border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+        <div className="col-span-2 md:col-span-1">
+          <div className="flex items-center gap-2 mb-4">
             <Scissors className="text-primary w-6 h-6" />
             <span className="text-xl font-black tracking-tight">TrimBook</span>
           </div>
-          <p className="text-slate-500 text-sm leading-relaxed mb-6">
+          <p className="text-slate-500 text-sm leading-relaxed">
             Redefining the grooming experience for the modern gentleman through technology and premium service.
           </p>
-          <div className="flex gap-4">
-            {/* Social icons would go here */}
-          </div>
         </div>
         <div>
-          <h4 className="font-bold mb-6">Services</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+          <h4 className="font-bold mb-4">Services</h4>
+          <ul className="space-y-2 text-sm text-slate-500">
             <li><Link to="#" className="hover:text-primary transition-colors">Classic Cuts</Link></li>
             <li><Link to="#" className="hover:text-primary transition-colors">Beard Grooming</Link></li>
             <li><Link to="#" className="hover:text-primary transition-colors">Hair Styling</Link></li>
@@ -56,8 +53,8 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="font-bold mb-6">Company</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+          <h4 className="font-bold mb-4">Company</h4>
+          <ul className="space-y-2 text-sm text-slate-500">
             <li><Link to="#" className="hover:text-primary transition-colors">About Us</Link></li>
             <li><Link to="#" className="hover:text-primary transition-colors">Our Barbers</Link></li>
             <li><Link to="#" className="hover:text-primary transition-colors">Careers</Link></li>
@@ -65,18 +62,16 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="font-bold mb-6">Support</h4>
-          <ul className="space-y-4 text-sm text-slate-500">
+          <h4 className="font-bold mb-4">Support</h4>
+          <ul className="space-y-2 text-sm text-slate-500">
             <li><Link to="#" className="hover:text-primary transition-colors">Contact Us</Link></li>
             <li><Link to="#" className="hover:text-primary transition-colors">Terms of Service</Link></li>
             <li><Link to="#" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
-            <li className="flex items-center gap-2">
-              hello@trimbook.app
-            </li>
+            <li>hello@trimbook.app</li>
           </ul>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pt-6 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className="text-xs text-slate-500">© 2024 TrimBook. All rights reserved.</p>
       </div>
     </footer>

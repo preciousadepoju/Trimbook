@@ -85,11 +85,11 @@ export default function ServicesPage() {
   const isBarber = user?.role === 'barber';
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
+    <div className="max-w-6xl mx-auto space-y-6 lg:space-y-8">
       {isBarber && (
-        <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 bg-white p-4 lg:p-6 rounded-xl lg:rounded-2xl border border-slate-200 shadow-sm">
           <div>
-            <h3 className="text-xl font-bold text-slate-800">Your Salon Services</h3>
+            <h3 className="text-lg lg:text-xl font-bold text-slate-800">Your Salon Services</h3>
             <p className="text-slate-500 text-sm">Create and manage the services you offer to clients.</p>
           </div>
           <button 
@@ -112,7 +112,7 @@ export default function ServicesPage() {
           <p className="text-slate-500 mt-2">Check back later or if you belong to a barber, add a service!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {services.map((service, i) => (
             <motion.div
               key={service._id || i}

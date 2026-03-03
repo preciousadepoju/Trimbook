@@ -101,22 +101,22 @@ export default function MyBookingsPage() {
     new Date(dateStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-6 lg:space-y-8">
       {/* Tabs */}
-      <div className="flex items-center gap-4 border-b border-slate-200">
+      <div className="flex items-center gap-3 border-b border-slate-200 overflow-x-auto">
         <button
           onClick={() => setActiveTab('upcoming')}
-          className={`pb-4 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'upcoming' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+          className={`pb-4 px-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === 'upcoming' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
         >
-          Upcoming Bookings
+          Upcoming
         </button>
         <button
           onClick={() => setActiveTab('past')}
-          className={`pb-4 px-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'past' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+          className={`pb-4 px-2 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${activeTab === 'past' ? 'border-primary text-primary' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
         >
-          Past Bookings
+          Past
         </button>
-        <div className="ml-auto pb-4">
+        <div className="ml-auto pb-4 shrink-0">
           <button onClick={fetchBookings} className="text-sm font-medium text-primary hover:underline flex items-center gap-1">
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} /> Refresh
           </button>
@@ -133,12 +133,12 @@ export default function MyBookingsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.07 }}
               key={apt._id}
-              className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4"
+              className="bg-white p-4 lg:p-6 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3"
             >
-              <div className="flex items-center gap-6">
-                <div className="size-16 rounded-xl bg-slate-100 flex flex-col items-center justify-center leading-none shadow-inner min-w-[64px]">
+              <div className="flex items-center gap-3 lg:gap-6">
+                <div className="size-12 lg:size-16 rounded-xl bg-slate-100 flex flex-col items-center justify-center leading-none shadow-inner min-w-[48px] lg:min-w-[64px]">
                   <span className="text-xs font-bold text-primary uppercase">{formatDate(apt.date).split(' ')[0]}</span>
-                  <span className="text-2xl font-black text-slate-900">{formatDate(apt.date).split(' ')[1]}</span>
+                  <span className="text-xl lg:text-2xl font-black text-slate-900">{formatDate(apt.date).split(' ')[1]}</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-3 mb-1 flex-wrap">
@@ -159,7 +159,7 @@ export default function MyBookingsPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 flex-wrap">
+              <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                 {activeTab === 'upcoming' ? (
                   <>
                     {isBarber ? (
