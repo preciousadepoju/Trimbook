@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Scissors, Sparkles, Droplets, Check, Plus, Loader2, X, Trash2, MapPin, Star } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../config/api';
 
 export default function ServicesPage() {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ export default function ServicesPage() {
 
   const fetchServices = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/services');
+      const res = await fetch(`${API_BASE_URL}/api/services`);
       if (!res.ok) throw new Error('Failed to load services');
       const data = await res.json();
       setServices(data);
@@ -40,7 +41,7 @@ export default function ServicesPage() {
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/services', {
+      const res = await fetch(`${API_BASE_URL}/api/services`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +69,7 @@ export default function ServicesPage() {
     if (!window.confirm('Are you sure you want to delete this service?')) return;
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch(`http://localhost:5000/api/services/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/services/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

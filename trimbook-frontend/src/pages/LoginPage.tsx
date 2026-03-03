@@ -4,6 +4,7 @@ import { Mail, Lock, Scissors, LogIn, User, Phone, MapPin, ChevronDown, Crosshai
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../config/api';
 
 const COUNTRY_CODES = [
   { code: '+1', flag: '🇺🇸', name: 'US/CA' },
@@ -159,7 +160,7 @@ export default function LoginPage() {
         ? { email, password } 
         : { name, email, password, role, phone: `${countryCode} ${phone}`, location };
 
-      const res = await fetch(`http://localhost:5000${endpoint}`, {
+      const res = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
@@ -201,7 +202,7 @@ export default function LoginPage() {
 
     setIsLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/auth/verify-email', {
+      const res = await fetch(`${API_BASE_URL}/api/auth/verify-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code: verificationCode })

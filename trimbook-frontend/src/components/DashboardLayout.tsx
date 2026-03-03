@@ -16,6 +16,7 @@ import { useAuth } from '../context/AuthContext';
 import { BookingModal } from './BookingModal';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../config/api';
 
 interface Notification {
   _id: string;
@@ -43,7 +44,7 @@ export function DashboardLayout() {
     const token = localStorage.getItem('trimbook_token');
     if (!token) return;
     try {
-      const res = await fetch('http://localhost:5000/api/notifications', {
+      const res = await fetch(`${API_BASE_URL}/api/notifications`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {
@@ -136,7 +137,7 @@ export function DashboardLayout() {
     const token = localStorage.getItem('trimbook_token');
     if (!token) return;
     try {
-      await fetch('http://localhost:5000/api/notifications/read-all', {
+      await fetch(`${API_BASE_URL}/api/notifications/read-all`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -149,7 +150,7 @@ export function DashboardLayout() {
     const token = localStorage.getItem('trimbook_token');
     if (!token) return;
     try {
-      await fetch(`http://localhost:5000/api/notifications/${id}/read`, {
+      await fetch(`${API_BASE_URL}/api/notifications/${id}/read`, {
         method: 'PATCH',
         headers: { 'Authorization': `Bearer ${token}` }
       });

@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Camera, Mail, User, Phone, MapPin, Loader2, X } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../config/api';
 
 export default function ProfilePage() {
   const { user, login } = useAuth(); // using login context update the locally stored user context optionally or just refresh
@@ -22,7 +23,7 @@ export default function ProfilePage() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/users/profile', {
+      const res = await fetch(`${API_BASE_URL}/api/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -59,7 +60,7 @@ export default function ProfilePage() {
       formData.append('image', file);
       
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/uploads/avatar', {
+      const res = await fetch(`${API_BASE_URL}/api/uploads/avatar`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -91,8 +92,7 @@ export default function ProfilePage() {
       });
       
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/uploads/portfolio', {
-        method: 'POST',
+      const res = await fetch(`${API_BASE_URL}/api/uploads/portfolio`, {
         headers: {
           'Authorization': `Bearer ${token}`
         },
@@ -115,8 +115,7 @@ export default function ProfilePage() {
   const handleDeletePortfolioImage = async (imageUrl: string) => {
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/uploads/portfolio', {
-        method: 'DELETE',
+      const res = await fetch(`${API_BASE_URL}/api/uploads/portfolio`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`

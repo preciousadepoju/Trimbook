@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { RatingModal } from '../components/RatingModal';
+import API_BASE_URL from '../config/api';
 
 export default function MyBookingsPage() {
   const [searchParams] = useSearchParams();
@@ -21,7 +22,7 @@ export default function MyBookingsPage() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/bookings', {
+      const res = await fetch(`${API_BASE_URL}/api/bookings`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to fetch bookings');
@@ -36,7 +37,7 @@ export default function MyBookingsPage() {
 
         const reviewChecks = await Promise.all(
           completedIds.map((id: string) =>
-            fetch(`http://localhost:5000/api/reviews/booking/${id}`, {
+            fetch(`${API_BASE_URL}/api/reviews/booking/${id}`, {
               headers: { 'Authorization': `Bearer ${token}` }
             }).then(r => r.json()).then(d => ({ id, reviewed: d.reviewed }))
           )
@@ -63,7 +64,7 @@ export default function MyBookingsPage() {
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${id}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

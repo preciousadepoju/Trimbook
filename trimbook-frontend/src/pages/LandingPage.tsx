@@ -3,6 +3,7 @@ import { Calendar, Scissors, ShieldCheck, Timer, Star, Clock, MapPin } from 'luc
 import { Navbar, Footer } from '../components/Layout';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import API_BASE_URL from '../config/api';
 
 // Fallback barbershop images for services that have no image
 const SERVICE_FALLBACK = 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&q=80&w=400';
@@ -16,7 +17,7 @@ export default function LandingPage() {
 
   // Fetch all services (combined from all barbers)
   useEffect(() => {
-    fetch('http://localhost:5000/api/services')
+    fetch(`${API_BASE_URL}/api/services`)
       .then(res => res.json())
       .then(data => {
         // Show max 4 on landing page
@@ -28,7 +29,7 @@ export default function LandingPage() {
 
   // Fetch barbers and sort by highest avg rating — top 3
   useEffect(() => {
-    fetch('http://localhost:5000/api/users/barbers')
+    fetch(`${API_BASE_URL}/api/users/barbers`)
       .then(res => res.json())
       .then(data => {
         if (!Array.isArray(data)) return setTopBarbers([]);

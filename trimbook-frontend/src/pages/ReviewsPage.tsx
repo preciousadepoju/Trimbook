@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Star, MessageSquare, TrendingUp, RefreshCw, Award } from 'lucide-react';
+import API_BASE_URL from '../config/api';
 
 interface Review {
   _id: string;
@@ -37,7 +38,7 @@ export default function ReviewsPage() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/reviews/my-reviews', {
+      const res = await fetch(`${API_BASE_URL}/api/reviews/my-reviews`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (res.ok) {

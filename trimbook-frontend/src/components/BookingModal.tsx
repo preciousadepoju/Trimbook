@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, Calendar, Scissors, User, MapPin, Clock, ChevronLeft, ChevronRight, ImageOff, Images, ZoomIn, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
+import API_BASE_URL from '../config/api';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -150,7 +151,7 @@ export function BookingModal({ isOpen, onClose, onSuccess, editData }: BookingMo
       }
 
       // Load all barbers
-      fetch('http://localhost:5000/api/users/barbers')
+      fetch(`${API_BASE_URL}/api/users/barbers`)
         .then(res => res.json())
         .then(data => {
           setBarbersList(data);
@@ -170,7 +171,7 @@ export function BookingModal({ isOpen, onClose, onSuccess, editData }: BookingMo
     if (!selectedB) return;
 
     setServicesList([]);
-    fetch(`http://localhost:5000/api/services/barber/${selectedB._id}`)
+    fetch(`${API_BASE_URL}/api/services/barber/${selectedB._id}`)
       .then(res => res.json())
       .then(data => {
         setServicesList(Array.isArray(data) ? data : []);
@@ -187,7 +188,7 @@ export function BookingModal({ isOpen, onClose, onSuccess, editData }: BookingMo
       setUnavailableTimes([]);
       return;
     }
-    fetch(`http://localhost:5000/api/bookings/unavailable-slots?barberName=${encodeURIComponent(barber)}&date=${selectedDate}`)
+    fetch(`${API_BASE_URL}/api/bookings/unavailable-slots?barberName=${encodeURIComponent(barber)}&date=${selectedDate}`)
       .then(res => res.json())
       .then(data => {
         setUnavailableTimes(data.bookedTimes || []);
@@ -236,8 +237,8 @@ export function BookingModal({ isOpen, onClose, onSuccess, editData }: BookingMo
       const token = localStorage.getItem('trimbook_token');
       const isEditing = editData && editData._id;
       const url = isEditing 
-        ? `http://localhost:5000/api/bookings/${editData._id}` 
-        : 'http://localhost:5000/api/bookings';
+        ? `${API_BASE_URL}/api/bookings/${editData._id}` 
+        : `${API_BASE_URL}/api/bookings`;
       
       const method = isEditing ? 'PUT' : 'POST';
 

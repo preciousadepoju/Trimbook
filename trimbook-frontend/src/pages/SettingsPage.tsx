@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../config/api';
 
 export default function SettingsPage() {
   const { logout } = useAuth();
@@ -19,7 +20,7 @@ export default function SettingsPage() {
     setIsDeleting(true);
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/users/profile', {
+      const res = await fetch(`${API_BASE_URL}/api/users/profile`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

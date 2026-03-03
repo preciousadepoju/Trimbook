@@ -9,6 +9,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../config/api';
 
 export default function DashboardPage() {
   const [data, setData] = useState<{
@@ -24,7 +25,7 @@ export default function DashboardPage() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/dashboard', {
+      const res = await fetch(`${API_BASE_URL}/api/dashboard`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -42,7 +43,7 @@ export default function DashboardPage() {
   const handleUpdateStatus = async (id: string, newStatus: string) => {
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
+      const res = await fetch(`${API_BASE_URL}/api/bookings/${id}/status`, {
         method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',

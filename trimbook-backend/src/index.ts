@@ -19,8 +19,22 @@ const app = express();
 // Middleware
 app.use(express.json());
 // CORS configuration
+const allowedOrigins = [
+    'https://trimbook-vert.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL,
+].filter(Boolean);
+
 const corsOptions = {
-    origin: '*', // You can restrict this to your frontend URL later e.g., 'http://localhost:5173'
+    origin: (origin: string | undefined, callback: Function) => {
+        // Allow requests with no origin (e.g., mobile apps, curl, Postman)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS: Origin ${origin} not allowed`));
+        }
+    },
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
     optionsSuccessStatus: 204

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, X, Loader2, MessageSquare } from 'lucide-react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../config/api';
 
 interface RatingModalProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ export function RatingModal({ isOpen, onClose, booking, onSuccess }: RatingModal
     setIsSubmitting(true);
     try {
       const token = localStorage.getItem('trimbook_token');
-      const res = await fetch('http://localhost:5000/api/reviews', {
+      const res = await fetch(`${API_BASE_URL}/api/reviews`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
