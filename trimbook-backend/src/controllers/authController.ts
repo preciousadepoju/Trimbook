@@ -2,9 +2,10 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
-import { sendVerificationEmail } from '../utils/email';
+import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_jwt_key_here_change_it';
+
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -199,3 +200,66 @@ export const getProfile = async (req: Request, res: Response): Promise<void> => 
     res.status(401).json({ message: 'Invalid token' });
   }
 };
+
+// Step 1: Send reset code to email
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    // Always return 200 to avoid user enumeration
+    if (!user) {
+      res.status(200).json({ message: 'If that email exists, a reset code has been sent.' });
+      return;
+    }
+
+    // Generate 6-digit code
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    user.resetPasswordCode = resetCode;
+    user.resetPasswordExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+    await user.save();
+
+    await sendPasswordResetEmail(user.email, resetCode);
+
+    res.status(200).json({ message: 'If that email exists, a reset code has been sent.' });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Step 2: Verify code and set new password
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
+      return;
+    }
+
+    if (!user.resetPasswordCode || user.resetPasswordCode !== code) {
+      res.status(400).json({ message: 'Invalid or incorrect reset code.' });
+      return;
+    }
+
+    if (user.resetPasswordExpiresAt && user.resetPasswordExpiresAt < new Date()) {
+      res.status(400).json({ message: 'Reset code has expired. Please request a new one.' });
+      return;
+    }
+
+    // Hash new password and clear reset fields
+    const salt = await bcrypt.genSalt(10);
+    user.passwordHash = await bcrypt.hash(newPassword, salt);
+    user.resetPasswordCode = undefined;
+    user.resetPasswordExpiresAt = undefined;
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successfully. You can now log in.' });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+

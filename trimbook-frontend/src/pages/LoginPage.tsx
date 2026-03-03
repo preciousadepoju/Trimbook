@@ -84,6 +84,62 @@ export default function LoginPage() {
   const [showVerification, setShowVerification] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
 
+  // Forgot password states
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotStep, setForgotStep] = useState<'email' | 'code' | 'done'>('email');
+  const [resetCode, setResetCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [isForgotLoading, setIsForgotLoading] = useState(false);
+
+  const handleForgotSendCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsForgotLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail })
+      });
+      const data = await res.json();
+      toast.success(data.message);
+      setForgotStep('code');
+    } catch {
+      toast.error('Failed to send reset code.');
+    } finally {
+      setIsForgotLoading(false);
+    }
+  };
+
+  const handleForgotResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmNewPassword) {
+      toast.error('Passwords do not match.');
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters.');
+      return;
+    }
+    setIsForgotLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail, code: resetCode, newPassword })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+      toast.success('Password reset! You can now log in.');
+      setForgotStep('done');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to reset password.');
+    } finally {
+      setIsForgotLoading(false);
+    }
+  };
+
   // Location Autocomplete Effect
   useEffect(() => {
     if (!location || location.length < 3 || !showLocationMenu) {
@@ -556,13 +612,19 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                {isLogin && (
+                {isLogin && !showForgotPassword && (
                   <div className="flex items-center justify-between">
                     <label className="flex items-center gap-2 cursor-pointer group">
                       <input className="rounded border-slate-300 text-primary focus:ring-primary h-4 w-4" type="checkbox" />
                       <span className="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">Remember me</span>
                     </label>
-                    <Link to="#" className="text-sm font-semibold text-primary hover:opacity-80 transition-opacity">Forgot password?</Link>
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPassword(true)}
+                      className="text-sm font-semibold text-primary hover:opacity-80 transition-opacity"
+                    >
+                      Forgot password?
+                    </button>
                   </div>
                 )}
 
@@ -577,26 +639,105 @@ export default function LoginPage() {
               </form>
             )}
 
-            {/* Social Login Separator */}
-            <div className="relative my-10">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-slate-500">Or continue with</span>
-              </div>
-            </div>
-
-            {/* Social Buttons */}
-            <div className="grid grid-cols-2 gap-4">
-              <button className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all">
-                <img alt="Google Logo" className="w-5 h-5" src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" referrerPolicy="no-referrer" />
-                <span className="text-sm font-semibold text-slate-700">Google</span>
-              </button>
-              <button className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all">
-                <span className="text-sm font-semibold text-slate-700">Facebook</span>
-              </button>
-            </div>
+            {/* Forgot Password Flow */}
+            {showForgotPassword && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={forgotStep}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="space-y-5"
+                >
+                  {forgotStep === 'done' ? (
+                    <div className="text-center py-6 space-y-4">
+                      <div className="size-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                        <span className="text-3xl">✅</span>
+                      </div>
+                      <p className="font-bold text-slate-800">Password reset successfully!</p>
+                      <button
+                        onClick={() => { setShowForgotPassword(false); setForgotStep('email'); setIsLogin(true); }}
+                        className="w-full bg-primary text-white font-bold py-3 rounded-xl"
+                      >
+                        Back to Login
+                      </button>
+                    </div>
+                  ) : forgotStep === 'email' ? (
+                    <form onSubmit={handleForgotSendCode} className="space-y-4">
+                      <p className="text-sm text-slate-500">Enter your account email and we'll send a 6-digit reset code.</p>
+                      <div className="relative">
+                        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                        <input
+                          type="email"
+                          required
+                          placeholder="Your email address"
+                          value={forgotEmail}
+                          onChange={e => setForgotEmail(e.target.value)}
+                          className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isForgotLoading}
+                        className="w-full bg-primary text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 disabled:opacity-70"
+                      >
+                        {isForgotLoading ? 'Sending...' : 'Send Reset Code'}
+                      </button>
+                      <button type="button" onClick={() => setShowForgotPassword(false)} className="w-full text-sm text-slate-500 hover:text-primary py-2">
+                        ← Back to Login
+                      </button>
+                    </form>
+                  ) : (
+                    <form onSubmit={handleForgotResetPassword} className="space-y-4">
+                      <p className="text-sm text-slate-500">Enter the 6-digit code sent to <strong>{forgotEmail}</strong> and your new password.</p>
+                      <input
+                        type="text"
+                        required
+                        maxLength={6}
+                        placeholder="6-digit code"
+                        value={resetCode}
+                        onChange={e => setResetCode(e.target.value.replace(/\D/g, ''))}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-center text-xl tracking-widest font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                      />
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                        <input
+                          type="password"
+                          required
+                          minLength={6}
+                          placeholder="New password"
+                          value={newPassword}
+                          onChange={e => setNewPassword(e.target.value)}
+                          className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                        />
+                      </div>
+                      <div className="relative">
+                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+                        <input
+                          type="password"
+                          required
+                          minLength={6}
+                          placeholder="Confirm new password"
+                          value={confirmNewPassword}
+                          onChange={e => setConfirmNewPassword(e.target.value)}
+                          className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        disabled={isForgotLoading}
+                        className="w-full bg-primary text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 disabled:opacity-70"
+                      >
+                        {isForgotLoading ? 'Resetting...' : 'Reset Password'}
+                      </button>
+                      <button type="button" onClick={() => setForgotStep('email')} className="w-full text-sm text-slate-500 hover:text-primary py-2">
+                        ← Back
+                      </button>
+                    </form>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            )}
 
           </motion.div>
         </div>

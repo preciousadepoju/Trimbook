@@ -11,9 +11,11 @@ export interface IUser extends Document {
   isVerified: boolean;
   verificationCode?: string;
   verificationCodeExpiresAt?: Date;
+  resetPasswordCode?: string;
+  resetPasswordExpiresAt?: Date;
   workingHours?: {
-    startTime: string; // e.g. "09:00"
-    endTime: string;   // e.g. "18:00"
+    startTime: string;
+    endTime: string;
   };
   portfolioImages?: string[];
   createdAt: Date;
@@ -61,6 +63,12 @@ const userSchema = new Schema<IUser>(
       type: String,
     },
     verificationCodeExpiresAt: {
+      type: Date,
+    },
+    resetPasswordCode: {
+      type: String,
+    },
+    resetPasswordExpiresAt: {
       type: Date,
     },
     workingHours: {
