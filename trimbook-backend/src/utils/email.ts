@@ -7,11 +7,14 @@ const createTransporter = () => {
     port,
     secure: port === 465,
     family: 4, // Force IPv4 to avoid ENETUNREACH on IPv6-disabled networks
+    connectionTimeout: 10000,  // 10s to establish connection
+    greetingTimeout: 8000,     // 8s to get SMTP greeting
+    socketTimeout: 15000,      // 15s of socket inactivity
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
-  } as any); // 'family' is valid at runtime but not in @types/nodemailer
+  } as any);
 };
 
 export const sendVerificationEmail = async (to: string, code: string) => {
@@ -42,32 +45,29 @@ export const sendVerificationEmail = async (to: string, code: string) => {
 };
 
 export const sendPasswordResetEmail = async (to: string, code: string) => {
-  try {
-    const transporter = createTransporter();
-    const info = await transporter.sendMail({
-      from: '"TrimBook Auth" <noreply@trimbook.com>',
-      to,
-      subject: 'Reset Your TrimBook Password',
-      text: `Your password reset code is: ${code}. It expires in 15 minutes.`,
-      html: `
-        <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e2e8f0; border-radius: 12px;">
-          <h2 style="color: #ea580c; margin-bottom: 4px;">TrimBook</h2>
-          <p style="color: #64748b; margin-top: 0;">Password Reset Request</p>
-          <hr style="border-color: #f1f5f9;" />
-          <p>We received a request to reset your password. Use the code below to proceed:</p>
-          <div style="margin: 24px auto; padding: 16px 24px; font-size: 28px; font-weight: bold; background-color: #fff7ed; border: 2px solid #ea580c; width: fit-content; border-radius: 10px; letter-spacing: 6px; color: #ea580c;">
-            ${code}
-          </div>
-          <p style="color: #64748b; font-size: 13px;">This code expires in <strong>15 minutes</strong>.</p>
-          <p style="color: #64748b; font-size: 13px;">If you didn't request a password reset, you can safely ignore this email.</p>
+  const transporter = createTransporter();
+  const info = await transporter.sendMail({
+    from: '"TrimBook Auth" <noreply@trimbook.com>',
+    to,
+    subject: 'Reset Your TrimBook Password',
+    text: `Your password reset code is: ${code}. It expires in 15 minutes.`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e2e8f0; border-radius: 12px;">
+        <h2 style="color: #ea580c; margin-bottom: 4px;">TrimBook</h2>
+        <p style="color: #64748b; margin-top: 0;">Password Reset Request</p>
+        <hr style="border-color: #f1f5f9;" />
+        <p>We received a request to reset your password. Use the code below to proceed:</p>
+        <div style="margin: 24px auto; padding: 16px 24px; font-size: 28px; font-weight: bold; background-color: #fff7ed; border: 2px solid #ea580c; width: fit-content; border-radius: 10px; letter-spacing: 6px; color: #ea580c;">
+          ${code}
         </div>
-      `,
-    });
-    console.log('Password reset email sent: %s', info.messageId);
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info as any));
-  } catch (error) {
-    console.error('Password reset email error:', error);
-  }
+        <p style="color: #64748b; font-size: 13px;">This code expires in <strong>15 minutes</strong>.</p>
+        <p style="color: #64748b; font-size: 13px;">If you didn't request a password reset, you can safely ignore this email.</p>
+      </div>
+    `,
+  });
+  console.log('[TrimBook] Password reset email sent to:', to);
+  console.log('[TrimBook] Reset code (debug):', code);
+  console.log('[TrimBook] Preview URL:', nodemailer.getTestMessageUrl(info as any));
 };
 
 

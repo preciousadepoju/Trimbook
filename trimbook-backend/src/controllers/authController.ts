@@ -219,9 +219,15 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
     user.resetPasswordExpiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
     await user.save();
 
-    await sendPasswordResetEmail(user.email, resetCode);
+    try {
+      await sendPasswordResetEmail(user.email, resetCode);
+    } catch (emailErr) {
+      console.error('[TrimBook] Failed to send reset email:', emailErr);
+      res.status(500).json({ message: 'Failed to send reset email. Please try again later.' });
+      return;
+    }
 
-    res.status(200).json({ message: 'If that email exists, a reset code has been sent.' });
+    res.status(200).json({ message: 'A 6-digit reset code has been sent to your email.' });
   } catch (error) {
     console.error('Forgot password error:', error);
     res.status(500).json({ message: 'Server error' });
