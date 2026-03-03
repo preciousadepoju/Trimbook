@@ -25,12 +25,15 @@ const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
     process.env.FRONTEND_URL,
-].filter(Boolean);
+].filter(Boolean) as string[];
+
+// Also allow all Vercel preview deployments (e.g. trimbook-xyz-user.vercel.app)
+const vercelPreviewRegex = /^https:\/\/trimbook.*\.vercel\.app$/;
 
 const corsOptions = {
     origin: (origin: string | undefined, callback: Function) => {
         // Allow requests with no origin (e.g., mobile apps, curl, Postman)
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin || allowedOrigins.includes(origin) || vercelPreviewRegex.test(origin)) {
             callback(null, true);
         } else {
             callback(new Error(`CORS: Origin ${origin} not allowed`));
