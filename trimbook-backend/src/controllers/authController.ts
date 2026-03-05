@@ -227,7 +227,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
       return;
     }
 
-    res.status(200).json({ message: 'A 6-digit reset code has been sent to your email.' });
+    res.status(200).json({ message: 'If that email exists, a reset code has been sent.' });
   } catch (error) {
     console.error('Forgot password error:', error);
     res.status(500).json({ message: 'Server error' });
